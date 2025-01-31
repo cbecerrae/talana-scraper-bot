@@ -1,0 +1,21 @@
+# Ignore Python cache directories
+__pycache__/
+
+# Ignore virtual environment directory
+.venv/
+
+# Exclude temporary screenshots
+*.png
+
+# Ignore Docker and Git configuration files
+.dockerignore
+.gitignore
+
+# Ignore build specification file for AWS CodeBuild
+buildspec.yml
+
+# Ignore README file
+README.md
+
+# Exclude Power Shell scripts
+*.ps1

@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  # Phase for pre-build commands
+  pre_build:
+    commands:
+      # Extract ECR_REGISTRY, REPOSITORY_NAME, and AWS_REGION from REPOSITORY_URI
+      - echo Extracting ECR registry, repository name, and region...
+      - export ECR_REGISTRY=$(echo $REPOSITORY_URI | cut -d'/' -f1)
+      - export REPOSITORY_NAME=$(echo $REPOSITORY_URI | cut -d'/' -f2)
+      - export AWS_REGION=$(echo $ECR_REGISTRY | cut -d'.' -f4)
+
+      # Log in to Amazon ECR (Elastic Container Registry) to authenticate Docker with the repository
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+  # Phase for build commands
+  build:
+    commands:
+      # Build the Docker image from the Dockerfile in the current directory
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_NAME .
+      # Tag the built Docker image with the repository URI and the 'latest' tag
+      - docker tag $REPOSITORY_NAME:latest $REPOSITORY_URI:latest
+
+  # Phase for post-build commands
+  post_build:
+    commands:
+      # Push the Docker image to Amazon ECR
+      - echo Pushing the Docker image...
+      - docker push $REPOSITORY_URI:latest
