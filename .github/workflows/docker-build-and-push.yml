@@ -1,0 +1,91 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow when there is a push to the 'main' branch
+    paths-ignore:
+      - '**/*.md'  # Exclude markdown files (*.md) from triggering the workflow
+  workflow_dispatch:  # Allows manual triggering of the workflow from the GitHub UI
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # The job will run on the latest Ubuntu runner
+    
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3  # Set up Docker Buildx for building multi-platform images
+    
+      - name: Build and export
+        uses: docker/build-push-action@v6  # Use Docker Buildx to build the image
+        with:
+          tags: docker-image:latest  # Tag the image with 'docker-image:latest'
+          outputs: type=docker,dest=${{ runner.temp }}/docker-image.tar  # Export the built image as a tarball
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4  # Upload the built image tarball as an artifact
+        with:
+          name: docker-image  # The name of the artifact
+          path: ${{ runner.temp }}/docker-image.tar  # The location of the tarball
+          retention-days: 1  # Retain the artifact for 1 day
+
+  push-ghcr:
+    needs: build  # This job depends on the completion of the 'build' job
+    runs-on: ubuntu-latest  # The job will run on the latest Ubuntu runner
+    
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4  # Download the previously uploaded artifact
+        with:
+          name: docker-image  # The name of the artifact
+          path: ${{ runner.temp }}  # Path to download the artifact to
+
+      - name: Load image
+        run: |
+          docker load --input ${{ runner.temp }}/docker-image.tar  # Load the Docker image from the tarball
+          docker image ls -a  # List all Docker images to verify it loaded correctly
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3  # Log in to GitHub Container Registry (GHCR)
+        with:
+          registry: ghcr.io  # The registry to log in to (GHCR)
+          username: ${{ github.repository_owner }}  # GitHub username or organization name
+          password: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
+
+      - name: Tag and Push Docker image to GitHub Packages
+        run: |
+          docker tag docker-image:latest ghcr.io/$GITHUB_REPOSITORY:latest  # Tag the image with the GitHub repository name
+          docker push ghcr.io/$GITHUB_REPOSITORY:latest  # Push the image to GitHub Container Registry
+
+  push-ecr:
+    needs: build  # This job depends on the completion of the 'build' job
+    runs-on: ubuntu-latest  # The job will run on the latest Ubuntu runner
+    env:
+      ECR_REPOSITORY_URI: ${{ secrets.ECR_REPOSITORY_URI }}  # ECR repository URI from GitHub secrets
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4  # Download the previously uploaded artifact
+        with:
+          name: docker-image  # The name of the artifact
+          path: ${{ runner.temp }}  # Path to download the artifact to
+
+      - name: Load image
+        run: |
+          docker load --input ${{ runner.temp }}/docker-image.tar  # Load the Docker image from the tarball
+          docker image ls -a  # List all Docker images to verify it loaded correctly
+
+      - name: Set Amazon ECR registry
+        run: echo "ECR_REGISTRY=$(echo $ECR_REPOSITORY_URI | cut -d'/' -f1)" >> $GITHUB_ENV  # Extract the ECR registry part from the URI and set it as an environment variable
+
+      - name: Login to Amazon ECR
+        uses: docker/login-action@v3  # Log in to Amazon ECR
+        with:
+          registry: ${{ env.ECR_REGISTRY }}  # Use the ECR registry from the environment variable
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}  # AWS Access Key ID from secrets
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # AWS Secret Access Key from secrets
+
+      - name: Tag and Push Docker image to Amazon ECR
+        run: |
+          docker tag docker-image:latest $ECR_REPOSITORY_URI:latest  # Tag the image with the ECR repository URI
+          docker push $ECR_REPOSITORY_URI:latest  # Push the image to Amazon ECR
