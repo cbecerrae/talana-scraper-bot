@@ -6,3 +6,7 @@ __pycache__/
 
 # Exclude temporary screenshots
 *.png
+
+# Exclude .env files
+*.env
+.env

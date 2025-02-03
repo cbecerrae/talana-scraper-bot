@@ -19,3 +19,7 @@ README.md
 
 # Exclude Power Shell scripts
 *.ps1
+
+# Exclude .env files
+*.env
+.env
