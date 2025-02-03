@@ -8,7 +8,7 @@ phases:
       - echo Extracting ECR registry, repository name, and region...
       - export ECR_REGISTRY=$(echo $REPOSITORY_URI | cut -d'/' -f1)
       - export REPOSITORY_NAME=$(echo $REPOSITORY_URI | cut -d'/' -f2)
-      - export AWS_REGION=$(echo $ECR_REGISTRY | cut -d'.' -f4)
+      - export AWS_REGION=$(echo $REPOSITORY_URI | cut -d'.' -f4)
 
       # Log in to Amazon ECR (Elastic Container Registry) to authenticate Docker with the repository
       - echo Logging in to Amazon ECR...
