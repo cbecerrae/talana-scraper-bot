@@ -6,7 +6,7 @@ Additionally, the bot integrates with AWS S3 for storing screenshots captured wh
 
 ## Usage
 
-### GitHub
+### 1. Clone the Repository
 
 To get started, clone the repository:
 
@@ -14,7 +14,7 @@ To get started, clone the repository:
 git clone https://github.com/cbecerrae/talana-scraper-bot.git
 ```
 
-### Build Docker Image
+### 2. Build the Docker Image
 
 Once cloned, navigate to the repository folder and build the Docker image:
 
@@ -22,19 +22,23 @@ Once cloned, navigate to the repository folder and build the Docker image:
 docker build . -t talana_scraper_bot
 ```
 
-### Environment Variables
+> It is **strongly recommended** to run the scraper bot in a Docker container rather than directly with Python to ensure proper environment setup and avoid dependency issues.
 
-Before running the bot, you need to edit the `.env` file and fill in the required values:
+### 3. Set Environment Variables
+
+Before running the bot, you need to create an `.env` file and fill in the required values:
 
 ```env
 AWS_ACCESS_KEY_ID=""
 AWS_SECRET_ACCESS_KEY=""
-SNS_TOPIC_ARN=""
 S3_BUCKET_NAME=""
+SNS_TOPIC_ARN=""
 AWS_REGION=""
 ```
 
-### Run the Bot
+You will need the AWS credentials of an IAM user, an S3 bucket, and an SNS topic. The IAM user should have `s3:PutObject` permission for the S3 bucket and `sns:Publish` permission for the SNS topic. Don't forget to specify the AWS region where the S3 bucket and SNS topic were created.
+
+### 4. Run the Bot
 
 To run the bot, use the following command with the appropriate flags for the `--type`, `--email`, and `--password`:
 
@@ -42,12 +46,18 @@ To run the bot, use the following command with the appropriate flags for the `--
 docker run --rm --env-file .env talana_scraper_bot --type <'In' or 'Out'> --email <user email> --password <user password>
 ```
 
-### Input Parameters
+#### Input Parameters
 
 - `--type`: Specifies the attendance type (`'In'` for check-in, `'Out'` for check-out).
 - `--email`: Specifies the user email for login authentication.
 - `--password`: Specifies the user password for login authentication.
 
-## Important Notes
+## GitHub Packages
 
-It is **strongly recommended** to run the scraper bot in a Docker container rather than directly with Python to ensure proper environment setup and avoid dependency issues.
+Alternatively, you can download the latest container image directly from GitHub Packages and run the bot without needing to build it manually. Use the following command to pull the latest Docker image:
+
+```bash
+docker pull ghcr.io/cbecerrae/talana-scraper-bot:latest
+```
+
+Then, proceed with running the bot starting from **Step 3** by setting the necessary environment variables. This method can save time and ensure you are using the most up-to-date version of the bot.
