@@ -8,6 +8,10 @@ on:
       - '**/*.md'  # Exclude markdown files (*.md) from triggering the workflow
   workflow_dispatch:  # Allows manual triggering of the workflow from the GitHub UI
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}  # Unique group for the workflow based on workflow name and ref (branch or tag)
+  cancel-in-progress: true  # Cancel any in-progress runs from the same group if a new one is triggered
+
 jobs:
   build:
     runs-on: ubuntu-latest  # The job will run on the latest Ubuntu runner
