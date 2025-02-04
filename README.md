@@ -54,7 +54,7 @@ docker run --rm --env-file .env talana_scraper_bot --type <'In' or 'Out'> --emai
 
 ## GitHub Packages
 
-[![Build and Push Docker Image to GitHub Container Registry](https://github.com/cbecerrae/talana-scraper-bot/actions/workflows/docker-build-and-push.yml/badge.svg)](https://github.com/cbecerrae/talana-scraper-bot/actions/workflows/docker-build-and-push.yml)
+[![Build and Push Docker Image](https://github.com/cbecerrae/talana-scraper-bot/actions/workflows/docker-build-and-push.yml/badge.svg)](https://github.com/cbecerrae/talana-scraper-bot/actions/workflows/docker-build-and-push.yml)
 
 Alternatively, you can download the latest container image directly from GitHub Packages and run the bot without needing to build it manually. Use the following command to pull the latest Docker image:
 

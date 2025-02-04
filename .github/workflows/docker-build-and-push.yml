@@ -6,6 +6,7 @@ on:
       - main  # Trigger the workflow when there is a push to the 'main' branch
     paths-ignore:
       - '**/*.md'  # Exclude markdown files (*.md) from triggering the workflow
+      - '.github/**' # Exclude changes in files within .github/ from triggering the workflow
   workflow_dispatch:  # Allows manual triggering of the workflow from the GitHub UI
 
 concurrency:
@@ -56,7 +57,7 @@ jobs:
           username: ${{ github.repository_owner }}  # GitHub username or organization name
           password: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
 
-      - name: Tag and Push Docker image to GitHub Packages
+      - name: Tag and Push Docker image to GitHub Container Registry
         run: |
           docker tag docker-image:latest ghcr.io/$GITHUB_REPOSITORY:latest  # Tag the image with the GitHub repository name
           docker push ghcr.io/$GITHUB_REPOSITORY:latest  # Push the image to GitHub Container Registry
