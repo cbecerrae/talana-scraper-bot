@@ -54,12 +54,23 @@ docker run --rm --env-file .env talana_scraper_bot --type <'In' or 'Out'> --emai
 
 ## GitHub Packages
 
-[![Build and Push Docker Image](https://github.com/cbecerrae/talana-scraper-bot/actions/workflows/docker-build-and-push.yml/badge.svg)](https://github.com/cbecerrae/talana-scraper-bot/actions/workflows/docker-build-and-push.yml)
-
-Alternatively, you can download the latest container image directly from GitHub Packages and run the bot without needing to build it manually. Use the following command to pull the latest Docker image:
+Alternatively, you can download the latest container image directly from [**GitHub Packages**](https://github.com/cbecerrae/talana-scraper-bot/pkgs/container/talana-scraper-bot) and run the bot without needing to build it manually. Use the following command to pull the latest Docker image:
 
 ```bash
 docker pull ghcr.io/cbecerrae/talana-scraper-bot:latest
 ```
 
 Then, proceed with running the bot starting from **Step 3** by setting the necessary environment variables. This method can save time and ensure you are using the most up-to-date version of the bot.
+
+## GitHub Actions
+
+[![Build and Push Docker Image](https://github.com/cbecerrae/talana-scraper-bot/actions/workflows/docker-build-and-push.yml/badge.svg)](https://github.com/cbecerrae/talana-scraper-bot/actions/workflows/docker-build-and-push.yml)
+
+In the [`.github/workflows/docker-build-and-push.yml`](.github/workflows/docker-build-and-push.yml) file, you'll find the "Build and Push Docker Image" workflow, which implements CI/CD for changes pushed to the `main` branch, excluding updates to markdown files (`.md`) or GitHub Actions files within `.github/`. This workflow can also be triggered manually and has a concurrency limit of 1, with in-progress jobs being canceled if a new job is triggered. 
+
+The CI/CD pipeline consists of a `build` job that builds the Docker image and stores it as an artifact. This artifact is then passed to the `push-ghcr` and `push-ecr` jobs. These jobs depend on the successful completion of the `build` job. Once the build job finishes, the push jobs download the artifact, tag it as ***latest***, log in to both the GitHub Container Registry and Amazon Elastic Container Registry (ECR), and push the image to these registries.
+
+You can disable this workflow, but if you have forked this repository and want to use it, configure the following repository secrets in GitHub Secrets:
+- **AWS_ACCESS_KEY_ID**: AWS access key.
+- **AWS_SECRET_ACCESS_KEY**: AWS secret access key.
+- **ECR_REPOSITORY_URI**: Amazon ECR repository URI.
