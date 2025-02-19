@@ -29,11 +29,11 @@ docker build . -t talana_scraper_bot
 Before running the bot, you need to create an `.env` file and fill in the required values:
 
 ```env
-AWS_ACCESS_KEY_ID=""
-AWS_SECRET_ACCESS_KEY=""
-S3_BUCKET_NAME=""
-SNS_TOPIC_ARN=""
-AWS_REGION=""
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+S3_BUCKET_NAME=
+SNS_TOPIC_ARN=
+AWS_REGION=
 ```
 
 You will need the AWS credentials of an IAM user, an S3 bucket, and an SNS topic. The IAM user should have `s3:PutObject` permission for the S3 bucket and `sns:Publish` permission for the SNS topic. Don't forget to specify the AWS region where the S3 bucket and SNS topic were created.
@@ -54,9 +54,11 @@ docker run --rm --env-file .env talana_scraper_bot --type <'In' or 'Out'> --emai
 
 ## GitHub Packages
 
-Alternatively, you can download the latest container image directly from [**GitHub Packages**](https://github.com/cbecerrae/talana-scraper-bot/pkgs/container/talana-scraper-bot) and run the bot without needing to build it manually. Use the following command to pull the latest Docker image:
+Alternatively, you can download the latest container image directly from [**GitHub Packages**](https://github.com/cbecerrae/talana-scraper-bot/pkgs/container/talana-scraper-bot) and run the bot without needing to build it manually. Use the following commands to pull the latest Docker image:
 
 ```bash
+docker login ghcr.io
+
 docker pull ghcr.io/cbecerrae/talana-scraper-bot:latest
 ```
 
