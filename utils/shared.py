@@ -1,9 +1,9 @@
+from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import boto3
-import datetime
 import logging
 import os
 import time
@@ -95,9 +95,10 @@ def take_screenshot(driver: WebDriver):
         
         # Return the S3 URI of the screenshot
         return s3_uri
-    except:
+    except Exception as e:
         # Log an error message if taking the screenshot fails
         logger.error(f'Error while taking screenshot.')
+        logger.error(f'Exception caught: {str(e)}')
 
 def send_sns_notification(error: str, screenshot_s3_uri: str = None):
     """
