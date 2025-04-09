@@ -19,7 +19,7 @@ git clone https://github.com/cbecerrae/talana-scraper-bot.git
 Once cloned, navigate to the repository folder and build the Docker image:
 
 ```bash
-docker build . -t talana_scraper_bot
+docker build . -t talana-scraper-bot
 ```
 
 > It is **strongly recommended** to run the scraper bot in a Docker container rather than directly with Python to ensure proper environment setup and avoid dependency issues.
@@ -43,7 +43,7 @@ You will need the AWS credentials of an IAM user, an S3 bucket, and an SNS topic
 To run the bot, use the following command with the appropriate flags for the `--type`, `--email`, and `--password`:
 
 ```bash
-docker run --rm --env-file .env talana_scraper_bot --type <'In' or 'Out'> --email <user email> --password <user password>
+docker run --rm --env-file .env talana-scraper-bot --type <'In' or 'Out'> --email <user email> --password <user password>
 ```
 
 #### Input Parameters
