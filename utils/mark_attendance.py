@@ -31,7 +31,7 @@ def click_mark_attendance(driver: WebDriver):
     # Click the mark attendance button
     logger.info('Clicking the mark attendance button.')
     
-    click(driver, (By.XPATH, '//p[text()="Turnos y marcas"]/..//button'))  # Click the mark attendance button
+    click(driver, (By.XPATH, '//button[@data-cy="pdt-mark-attendance"]'))  # Click the mark attendance button
     
     logger.info('Mark attendance button clicked successfully.')
     
@@ -46,13 +46,12 @@ def click_mark_type_selector(driver: WebDriver, mark: str):
     # Click the mark type selector and select the specified mark type
     logger.info(f'Entering the mark type "{mark}".')
     
-    click(driver, (By.XPATH, '//div[text()="Marca"]/..'))  # Click the mark type selector
+    click(driver, (By.XPATH, '//input[@placeholder="Marca"]'))  # Click the mark type selector
     
     if mark == 'In':
-        click(driver, (By.XPATH, '//div[text()="Entrada"]'))  # Select the "In" mark type
+        click(driver, (By.XPATH, '//span[text()="Entrada"]'))  # Select the "In" mark type
     elif mark == 'Out':
-        click(driver, (By.XPATH, '//div[text()="Salida"]'))  # Select the "Out" mark type
-    
+        click(driver, (By.XPATH, '//span[text()="Salida"]'))  # Select the "Out" mark type
     
     logger.info(f'Mark type "{mark}" entered successfully.')
     
@@ -66,6 +65,6 @@ def finish_mark_attendance(driver: WebDriver):
     # Click the finish mark button
     logger.info('Clicking the finish mark button.')
     
-    click(driver, (By.XPATH, '//span[text()="Marcar"]/../../..'))  # Click the finish mark button
+    click(driver, (By.XPATH, '//button[@data-cy="pdt-mark-confirmMarkAttendance"]'))  # Click the finish mark button
     
     logger.info('Finish mark button clicked successfully.')
